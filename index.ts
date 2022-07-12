@@ -1,13 +1,19 @@
 import * as cheerio from 'cheerio';
 
+import { asyncSeriesLoop } from './utils';
+// import { Worker } from 'worker_threads';
 import axios from 'axios';
 
-// interface Result {
-//   url: string;
-//   siteLinks: string[];
-// }
+// import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from './utils';
 
-async function fetchWebsite(url: string): Promise<string | null> {
+// import { hrtime } from 'process';
+
+interface Result {
+  url: string;
+  siteLinks: string[];
+}
+
+export async function fetchWebsite(url: string): Promise<string | null> {
   console.log(`Fetching data from ${url}`);
 
   const response = await axios.get(url);
@@ -23,7 +29,11 @@ async function fetchWebsite(url: string): Promise<string | null> {
   return response.data;
 }
 
-function getLinksFromWebsite(html: string, prefix = '', baseURL?: string) {
+export function getLinksFromWebsite(
+  html: string,
+  prefix = '',
+  baseURL?: string
+) {
   const $ = cheerio.load(html);
   const validLinks: string[] = [];
 
@@ -42,31 +52,45 @@ function getLinksFromWebsite(html: string, prefix = '', baseURL?: string) {
   return validLinks;
 }
 
+async function processRootLinks(link: string) {
+  const site = await fetchWebsite(link);
+  if (site) {
+    const linkArray = getLinksFromWebsite(site);
+    return { url: link, siteLinks: linkArray };
+  }
+
+  return null;
+}
+
 async function main(url: string) {
   const html = await fetchWebsite(url);
 
   if (!html) return;
 
-  //   const finalResult: Result[] = [];
   const rootLinks = getLinksFromWebsite(html, '/', url);
-  const queue = [];
+  //   console.log('root links', rootLinks.slice(3))
 
-  for (let link of rootLinks) {
-    // queue.push(async function () {
-    //   console.log('starting async function', link);
-    //   const site = await fetchWebsite(link);
-    //   if (site) {
-    //     const linkArray = getLinksFromWebsite(site);
-    //     finalResult.push({ url: site, siteLinks: linkArray });
-    //   }
+  // process in chunks
+  //   const chunks = splitToChunks<string>(rootLinks.slice(0,3));
 
-    //   console.log('ending async function', link);
-    // });
+  //
+  /**
+   * the chunks array is processed in series.
+   * however all items within each chunk are processed in parallel.
+   */
+  const finalResult = await asyncSeriesLoop<Result>(
+    rootLinks.slice(0, 3),
+    processRootLinks
+  );
 
-    queue.push(fetchWebsite(link));
-  }
-  const childrenHTML = await Promise.all(queue);
-  console.log('final result', childrenHTML.length);
+  //   const finalResult = await asyncSeriesLoop<Result>(
+  //     chunks,
+  //     async (chunk: string[]) => {
+  //         return asyncParallelLoop<Result>(chunk, processRootLinks);
+  //     }
+  //   );
+
+  console.log('final result', finalResult);
 }
 
 main('https://monzo.com');
