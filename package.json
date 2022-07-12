@@ -1,0 +1,23 @@
+{
+  "name": "web-crawler",
+  "version": "1.0.0",
+  "description": "a simple web crawler",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olorondu-emeka/web-crawler.git"
+  },
+  "author": "Chukwuemeka Olorondu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olorondu-emeka/web-crawler/issues"
+  },
+  "homepage": "https://github.com/olorondu-emeka/web-crawler#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}

@@ -1,0 +1,11 @@
+Implementation plan
+
+1. get all links on the rootURL's page
+2. filter links for those having the rootURL as a prefix
+3. iterate through the filtered links and for each link, create an object like so:
+    { url: whatever, links: string[] }
+4. create a separate worker thread for performing steps 3 above
+5.  return this object to the parent thread and push the result to an array
+6. in the parent thread, check that all worker threads have compleded processing before returning the final result
+7. refactor solution into a library
+8. write unit tests
