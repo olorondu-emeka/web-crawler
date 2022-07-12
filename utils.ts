@@ -1,7 +1,3 @@
-export function calculateResponseTime(start: bigint, end: bigint) {
-  return (end - start) / BigInt(10 ** 6);
-}
-
 export function formatLink(
   link: string,
   prefix: string,
