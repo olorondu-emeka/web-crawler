@@ -15,3 +15,4 @@ Tradeoffs & Todos
 1. processed crawling of child links in chunks & series
 2. add retry mechanism for failed requests
 3. add retry times for failed requests
+4. how to handle duplicate links

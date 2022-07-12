@@ -1,10 +1,10 @@
 import * as cheerio from 'cheerio';
 
-import { asyncSeriesLoop } from './utils';
+import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from './utils';
+
+// import { asyncSeriesLoop } from './utils';
 // import { Worker } from 'worker_threads';
 import axios from 'axios';
-
-// import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from './utils';
 
 // import { hrtime } from 'process';
 
@@ -55,8 +55,9 @@ export function getLinksFromWebsite(
 async function processRootLinks(link: string) {
   const site = await fetchWebsite(link);
   if (site) {
-    const linkArray = getLinksFromWebsite(site);
-    return { url: link, siteLinks: linkArray };
+    // const linkArray = getLinksFromWebsite(site);
+    // return { url: link, siteLinks: linkArray };
+    return { url: link };
   }
 
   return null;
@@ -68,10 +69,9 @@ async function main(url: string) {
   if (!html) return;
 
   const rootLinks = getLinksFromWebsite(html, '/', url);
-  //   console.log('root links', rootLinks.slice(3))
 
   // process in chunks
-  //   const chunks = splitToChunks<string>(rootLinks.slice(0,3));
+  const chunks = splitToChunks<string>(rootLinks.slice(0, 20), 5);
 
   //
   /**
@@ -79,18 +79,19 @@ async function main(url: string) {
    * however all items within each chunk are processed in parallel.
    */
   const finalResult = await asyncSeriesLoop<Result>(
-    rootLinks.slice(0, 3),
-    processRootLinks
+    chunks,
+    async (chunk: string[]) => {
+      const chunkResult = await asyncParallelLoop<Result>(
+        chunk,
+        processRootLinks
+      );
+
+      //   console.log('chunk result', chunkResult);
+      return chunkResult;
+    }
   );
 
-  //   const finalResult = await asyncSeriesLoop<Result>(
-  //     chunks,
-  //     async (chunk: string[]) => {
-  //         return asyncParallelLoop<Result>(chunk, processRootLinks);
-  //     }
-  //   );
-
-  console.log('final result', finalResult);
+  console.log('final result', finalResult, finalResult.length);
 }
 
 main('https://monzo.com');

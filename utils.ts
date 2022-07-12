@@ -11,44 +11,34 @@ export function splitToChunks<T>(items: T[], chunkSize = 20): Array<T[]> {
   return chunks;
 }
 
-export async function asyncParallelLoop<T>(items: T[], callback: Function) {
+export async function asyncParallelLoop<T>(
+  items: any[],
+  callback: Function
+): Promise<T[]> {
   const promises = items.map((item) => callback(item));
   return Promise.all(promises);
 }
 
 // export function asyncSeriesLoop
-export async function asyncSeriesLoop<T>(items: string[], callback: Function) {
-  const finalResult: T[] = [];
+export async function asyncSeriesLoop<T>(
+  items: string[][],
+  callback: Function
+) {
+  let finalResult: T[] = [];
 
-  await items.reduce(
-    async (previousPromise: Promise<any>, nextItem: string) => {
+  const lastResolvedPromise = await items.reduce(
+    async (previousPromise: Promise<any>, currentItem: string[]) => {
       const result = await previousPromise;
+
       if (result) {
-        finalResult.push(result);
+        finalResult = finalResult.concat(result);
       }
 
-      return callback(nextItem);
+      return callback(currentItem);
     },
     Promise.resolve()
   );
 
+  finalResult.push(...lastResolvedPromise);
   return finalResult;
 }
-
-// export async function asyncSeriesLoop<T>(items: string[], callback: Function) {
-//   const finalResult: T[] = [];
-
-//   await items.reduce(
-//     async (previousPromise: Promise<any>, nextItem: string) => {
-//       const result = await previousPromise;
-//       if (result) {
-//         finalResult.push(result);
-//       }
-
-//       return callback(nextItem);
-//     },
-//     Promise.resolve()
-//   );
-
-//   return finalResult;
-// }
