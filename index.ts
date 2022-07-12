@@ -14,22 +14,41 @@ import axios from 'axios';
 interface Result {
   url: string;
   siteLinks: string[];
+  linkCount: number;
 }
 
-export async function fetchWebsite(url: string): Promise<string | null> {
-  console.log(`Fetching data from ${url}`);
+export async function fetchWebsite(
+  url: string,
+  retries = 3
+): Promise<string | null> {
+  let success = false;
+  let result = null;
+  let count = 0;
 
-  const response = await axios.get(url);
-  if (response.status !== 200) {
-    console.log(
-      'Data retrieval unsuccessful with status code:',
-      response.status
-    );
-    return null;
+  while (!success) {
+    try {
+      if (count === retries) {
+        break;
+      }
+
+      const response = await axios.get(url);
+      if (response.status !== 200) {
+        console.log(
+          'Data retrieval unsuccessful with status code:',
+          response.status
+        );
+        return null;
+      }
+
+      result = response.data;
+      success = true;
+    } catch (error: any) {
+      console.log('HTTP error:', error.message);
+      count += 1;
+    }
   }
 
-  console.log(`data fetched from ${url}`);
-  return response.data;
+  return result;
 }
 
 export function getLinksFromWebsite(
@@ -60,26 +79,28 @@ export function getLinksFromWebsite(
   return validLinks;
 }
 
-async function processRootLinks(link: string) {
+async function processRootLinks(link: string): Promise<Result | null> {
   const site = await fetchWebsite(link);
   if (site) {
     const linkArray = getLinksFromWebsite(site);
-    return { url: link, siteLinks: linkArray };
-    // return { url: link };
+    return { url: link, siteLinks: linkArray, linkCount: linkArray.length };
   }
 
   return null;
 }
 
 async function main(url: string) {
-  const html = await fetchWebsite(url);
+  console.log(`Fetching data from ${url}`);
 
-  if (!html) return;
+  const html = await fetchWebsite(url);
+  if (!html) {
+    return;
+  }
 
   const rootLinks = getLinksFromWebsite(html, '/', url);
 
   // process in chunks
-  const chunks = splitToChunks<string>(rootLinks.slice(0, 2), 10);
+  const chunks = splitToChunks<string>(rootLinks.slice(0, 20), 10);
 
   /**
    * the chunks array is processed in series.
@@ -93,7 +114,6 @@ async function main(url: string) {
         processRootLinks
       );
 
-      //   console.log('chunk result', chunkResult);
       return chunkResult;
     }
   );
