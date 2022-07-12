@@ -1,9 +1,12 @@
 import * as cheerio from 'cheerio';
 
-import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from './utils';
+import {
+  asyncParallelLoop,
+  asyncSeriesLoop,
+  formatLink,
+  splitToChunks
+} from './utils';
 
-// import { asyncSeriesLoop } from './utils';
-// import { Worker } from 'worker_threads';
 import axios from 'axios';
 
 // import { hrtime } from 'process';
@@ -38,13 +41,18 @@ export function getLinksFromWebsite(
   const validLinks: string[] = [];
 
   const links = $('a');
+  const linksMap: Record<string, boolean> = {};
+
   links.each(function () {
     const link = $(this).attr('href');
 
     const condition = link && link.length > 1 && link.startsWith(prefix);
     if (condition) {
-      const formattedLink = prefix.length ? `${baseURL}${link}` : link;
-      validLinks.push(formattedLink);
+      const formattedLink = formatLink(link, prefix, baseURL);
+      if (!linksMap[formattedLink]) {
+        validLinks.push(formattedLink);
+        linksMap[formattedLink] = true;
+      }
     }
   });
 
@@ -55,9 +63,9 @@ export function getLinksFromWebsite(
 async function processRootLinks(link: string) {
   const site = await fetchWebsite(link);
   if (site) {
-    // const linkArray = getLinksFromWebsite(site);
-    // return { url: link, siteLinks: linkArray };
-    return { url: link };
+    const linkArray = getLinksFromWebsite(site);
+    return { url: link, siteLinks: linkArray };
+    // return { url: link };
   }
 
   return null;
@@ -71,9 +79,8 @@ async function main(url: string) {
   const rootLinks = getLinksFromWebsite(html, '/', url);
 
   // process in chunks
-  const chunks = splitToChunks<string>(rootLinks.slice(0, 20), 5);
+  const chunks = splitToChunks<string>(rootLinks.slice(0, 2), 10);
 
-  //
   /**
    * the chunks array is processed in series.
    * however all items within each chunk are processed in parallel.
