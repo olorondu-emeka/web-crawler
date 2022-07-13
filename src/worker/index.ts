@@ -1,4 +1,4 @@
-import { ChildLink, CrawlerConfig } from './worker.model';
+import { ChildLink, CrawlerConfig, CrawlerResult } from './worker.model';
 import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from '../internal';
 import { getLinksFromWebsite, processRootLinks } from './worker.service';
 
@@ -11,7 +11,7 @@ export default class WebCrawler {
    * crawls a website given a URL
    * @param url the root url to be crawled
    */
-  async crawl(url: string): Promise<void> {
+  async crawl(url: string): Promise<CrawlerResult | undefined> {
     console.log(`\nFetching data from ${url}`);
 
     const html = await fetchWebsite(url, this?.config?.retries);
@@ -41,12 +41,19 @@ export default class WebCrawler {
     );
 
     // print result
+    const finalResult: CrawlerResult = {
+      rootURL: url,
+      totalLinks: rootLinks.length,
+      links: processedLinks
+    };
     console.log(`
       Final Result:\t
       -------------
     `);
-    console.log('rootURL:', url);
-    console.log('totalLinks:', rootLinks.length);
-    console.log('links:\n', processedLinks);
+    console.log('rootURL:', finalResult.rootURL);
+    console.log('totalLinks:', finalResult.totalLinks);
+    console.log('links:\n', finalResult.links);
+
+    return finalResult;
   }
 }

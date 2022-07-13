@@ -11,8 +11,10 @@ Implementation plan
 8. write unit tests
 
 
-Tradeoffs & Todos
-1. processed crawling of child links in chunks & series
-2. add retry mechanism for failed requests
-3. add retry times for failed requests
-4. how to handle duplicate links
+Edge cases & Todos
+1. processed crawling of child links in chunks & series (concurrency)
+2. add retry times for failed requests
+3. handled duplicate links using a linkMap
+4. add chunkSize for batch processing
+5. Todo: rate limiter for max number of sites to be visited
+6. Todo: write unit tests
