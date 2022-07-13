@@ -7,15 +7,17 @@ import axios from 'axios';
  */
 export async function fetchWebsite(
   url: string,
-  retries = 3
+  retries?: number
 ): Promise<string | null> {
   let success = false;
   let result = null;
   let count = 0;
 
+  const maxRetries = retries ? Math.max(0, Number(retries)) : 3;
+
   while (!success) {
     try {
-      if (count === retries) {
+      if (count === maxRetries) {
         break;
       }
 

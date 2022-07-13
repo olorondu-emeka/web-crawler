@@ -22,10 +22,11 @@ export function formatLink(
  * @param items array to be split
  * @param chunkSize chunk size for the array
  */
-export function splitToChunks<T>(items: T[], chunkSize = 20): Array<T[]> {
+export function splitToChunks<T>(items: T[], chunkSize?: number): Array<T[]> {
+  const maxChunkSize = chunkSize ? Math.max(0, Number(chunkSize)) : 10;
   const chunks = [];
-  for (let i = 0; i < items.length; i += chunkSize) {
-    chunks.push(items.slice(i, chunkSize + i));
+  for (let i = 0; i < items.length; i += maxChunkSize) {
+    chunks.push(items.slice(i, maxChunkSize + i));
   }
 
   return chunks;

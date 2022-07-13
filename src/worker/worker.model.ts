@@ -3,3 +3,8 @@ export interface ChildLink {
   siteLinks: string[];
   linkCount: number;
 }
+
+export interface CrawlerConfig {
+  retries?: number;
+  chunkSize?: number;
+}
