@@ -1,6 +1,6 @@
-import { ChildLink, CrawlerConfig, CrawlerResult } from './worker.model';
+import { ChildLink, CrawlerConfig, CrawlerResult } from './crawler.model';
 import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from '../internal';
-import { getLinksFromWebsite, processRootLinks } from './worker.service';
+import { getLinksFromWebsite, processRootLinks } from './crawler.service';
 
 import { fetchWebsite } from '../http';
 

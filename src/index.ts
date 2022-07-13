@@ -1,6 +1,6 @@
 import { stdin, stdout } from 'process';
 
-import WebCrawler from './worker';
+import WebCrawler from './crawler';
 import { createInterface } from 'readline';
 
 function example() {
