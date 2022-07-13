@@ -1,11 +1,11 @@
+import { ChildLink, CrawlerConfig } from './worker.model';
 import { asyncParallelLoop, asyncSeriesLoop, splitToChunks } from '../internal';
 import { getLinksFromWebsite, processRootLinks } from './worker.service';
 
-import { ChildLink } from './worker.model';
 import { fetchWebsite } from '../http';
 
 export default class WebCrawler {
-  constructor(private retries?: number) {}
+  constructor(private config?: CrawlerConfig) {}
 
   /**
    * crawls a website given a URL
@@ -14,7 +14,7 @@ export default class WebCrawler {
   async crawl(url: string): Promise<void> {
     console.log(`\nFetching data from ${url}`);
 
-    const html = await fetchWebsite(url, this.retries);
+    const html = await fetchWebsite(url, this?.config?.retries);
     if (!html) {
       return;
     }
@@ -22,7 +22,7 @@ export default class WebCrawler {
     const rootLinks = getLinksFromWebsite(html, '/', url);
 
     // process in chunks
-    const chunks = splitToChunks<string>(rootLinks, 10);
+    const chunks = splitToChunks<string>(rootLinks, this?.config?.chunkSize);
 
     /**
      * the chunks array is processed in series.

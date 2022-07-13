@@ -3,7 +3,7 @@ import { stdin, stdout } from 'process';
 import WebCrawler from './worker';
 import { createInterface } from 'readline';
 
-function main() {
+function example() {
   // read input from the console
   const consoleInterface = createInterface({
     input: stdin,
@@ -17,8 +17,6 @@ function main() {
 
     consoleInterface.close();
   });
-
-  //
 }
 
-main();
+example();
