@@ -1,3 +1,9 @@
+/**
+ * differentiates betweeen a relative link within the same domain and an external link
+ * @param link link to be formatted
+ * @param prefix link prefix
+ * @param baseURL parent URL for a relative link (optional)
+ */
 export function formatLink(
   link: string,
   prefix: string,
@@ -11,6 +17,11 @@ export function formatLink(
   return formattedLink;
 }
 
+/**
+ * splits an array into a predefined number of chunks
+ * @param items array to be split
+ * @param chunkSize chunk size for the array
+ */
 export function splitToChunks<T>(items: T[], chunkSize = 20): Array<T[]> {
   const chunks = [];
   for (let i = 0; i < items.length; i += chunkSize) {

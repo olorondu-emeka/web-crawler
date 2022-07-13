@@ -1,3 +1,9 @@
+/**
+ * loops through an array and processes the callback function for each array item in parallel (i.e, concurrently)
+ * @param items the array to be proccessed
+ * @param callback async function to be called for each array item
+ * @returns
+ */
 export async function asyncParallelLoop<T>(
   items: any[],
   callback: Function
@@ -6,6 +12,12 @@ export async function asyncParallelLoop<T>(
   return Promise.all(promises);
 }
 
+/**
+ * similar to `asyncParallelLoop` but processes the callback function for each array item in series (i.e, synchronously)
+ * @param items
+ * @param callback
+ * @returns
+ */
 export async function asyncSeriesLoop<T>(
   items: string[][],
   callback: Function

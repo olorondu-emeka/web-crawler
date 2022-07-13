@@ -1,5 +1,10 @@
 import axios from 'axios';
 
+/**
+ * HHTTP wrapper for fetching data from an API endpoint
+ * @param url endpoint URL
+ * @param retries number of retries (defaults to 3)
+ */
 export async function fetchWebsite(
   url: string,
   retries = 3

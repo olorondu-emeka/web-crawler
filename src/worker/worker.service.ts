@@ -1,14 +1,19 @@
 import * as cheerio from 'cheerio';
 
-// import { ChildLink } from './worker.model';
 import { fetchWebsite } from '../http/fetch';
 import { formatLink } from '../internal/utils';
 
+/**
+ * retrieves all href values from the <a> tag present in a website's HTML
+ * @param html website's HTML
+ * @param prefix prefix to separate relative links from external links
+ * @param baseURL the website's URL
+ */
 export function getLinksFromWebsite(
   html: string,
   prefix = '',
   baseURL?: string
-) {
+): string[] {
   const $ = cheerio.load(html);
   const validLinks: string[] = [];
 
@@ -28,10 +33,13 @@ export function getLinksFromWebsite(
     }
   });
 
-  // console.log('total links:', validLinks.length);
   return validLinks;
 }
 
+/**
+ * retrieves all href values from the <a> tag present in a website's HTML using the site's URL
+ * @param link the website's URL
+ */
 export async function processRootLinks(link: string): Promise<any | null> {
   const site = await fetchWebsite(link);
   if (site) {
