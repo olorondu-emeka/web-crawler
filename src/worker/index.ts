@@ -12,7 +12,7 @@ export default class WebCrawler {
    * @param url the root url to be crawled
    */
   async crawl(url: string): Promise<void> {
-    console.log(`Fetching data from ${url}`);
+    console.log(`\nFetching data from ${url}`);
 
     const html = await fetchWebsite(url, this.retries);
     if (!html) {
