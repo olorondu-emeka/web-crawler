@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "target": "es2018",
     "lib": [
       "es2018",
