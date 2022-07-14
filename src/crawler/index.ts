@@ -1,4 +1,5 @@
 import { CrawlerConfig } from './crawler.model';
+import { Node } from './crawler.model';
 import { processLink } from './crawler.service';
 
 export default class WebCrawler {
@@ -12,7 +13,7 @@ export default class WebCrawler {
    * crawls a website given a url
    * @param baseURL the root url to be crawled
    */
-  async crawl(baseURL: string): Promise<any | undefined> {
+  async crawl(baseURL: string): Promise<Node> {
     this.visited[baseURL] = true;
 
     console.log(`\nFetching data from ${baseURL}`);
