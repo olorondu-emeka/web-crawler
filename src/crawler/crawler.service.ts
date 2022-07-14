@@ -57,17 +57,16 @@ export async function processLink(
 ): Promise<Node> {
   const formattedLink = formatLink(childURL, baseURL);
 
-  const html = await fetchWebsite(formattedLink, retries);
+  // delay to safegueard against web-crawler detection enabed sites
+  await randomDelay();
 
+  const html = await fetchWebsite(formattedLink, retries);
   const children: Node[] = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
 
     for (const link of relativeLinks) {
-      // delay to safegueard against web-crawler detection enabed sites
-      await randomDelay();
-
       const result = await processLink(baseURL, link, visited, retries);
       children.push(result);
     }
