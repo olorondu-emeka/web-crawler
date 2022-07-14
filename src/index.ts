@@ -12,8 +12,10 @@ function example() {
 
   // let url: string;
   consoleInterface.question('Enter URL (https://):\n', async (url) => {
-    const crawler = new WebCrawler();
-    await crawler.crawl(url);
+    const crawler = new WebCrawler({ retries: 1 });
+    const result = await crawler.crawl(url);
+
+    console.log('final result', result);
 
     consoleInterface.close();
   });

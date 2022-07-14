@@ -1,7 +1,8 @@
 import * as cheerio from 'cheerio';
 
+import { formatLink, randomDelay } from '../internal/utils';
+
 import { fetchWebsite } from '../http/fetch';
-import { formatLink } from '../internal/utils';
 
 /**
  * retrieves all href values from the <a> tag present in a website's HTML
@@ -28,9 +29,11 @@ export function getLinksFromWebsite(
 
     const condition = link && link.length > 1 && link.startsWith(prefix);
     if (condition) {
+      // console.log('hii');
+
       const formattedLink = formatLink(link, baseURL);
       if (!linksMap[formattedLink] && !visited[formattedLink]) {
-        validLinks.push(formattedLink);
+        validLinks.push(link);
         linksMap[formattedLink] = true;
         visited[formattedLink] = true;
       }
@@ -51,23 +54,33 @@ export async function processLink(
   retries?: number
 ): Promise<any | null> {
   const formattedLink = formatLink(childURL, baseURL);
+  console.log('formatted link', formattedLink);
+
   const html = await fetchWebsite(formattedLink, retries);
+  // console.log('html', html);
+
   const children = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
+    console.log('relative links', relativeLinks);
 
     for (const link of relativeLinks) {
+      // delay to safegueard against web-crawler detection enabed sites
+      await randomDelay();
+
       const result = await processLink(baseURL, link, visited, retries);
       children.push(result);
+
+      console.log('processed result', result);
     }
 
-    return {
-      url: formattedLink,
-      count: children.length,
-      children
-    };
+    console.log('visited', visited);
   }
 
-  return null;
+  return {
+    url: formattedLink,
+    count: children.length,
+    children
+  };
 }

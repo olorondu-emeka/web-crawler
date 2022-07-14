@@ -3,7 +3,8 @@ import { processLink } from './crawler.service';
 
 export default class WebCrawler {
   private visited: Record<string, boolean>;
-  constructor(private baseURL: string, private config?: CrawlerConfig) {
+
+  constructor(private config?: CrawlerConfig) {
     this.visited = {};
   }
 
@@ -11,10 +12,11 @@ export default class WebCrawler {
    * crawls a website given a URL
    * @param url the root url to be crawled
    */
-  async crawl(url: string): Promise<any | undefined> {
-    console.log(`\nFetching data from ${url}`);
+  async crawl(baseURL: string): Promise<any | undefined> {
+    console.log(`\nFetching data from ${baseURL}`);
+
     const result = await processLink(
-      this.baseURL,
+      baseURL,
       '',
       this.visited,
       this?.config?.retries

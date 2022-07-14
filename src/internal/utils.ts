@@ -1,3 +1,5 @@
+import { promisify } from 'util';
+
 /**
  * differentiates betweeen a relative link within the same domain and an external link
  * @param link link to be formatted
@@ -26,4 +28,12 @@ export function splitToChunks<T>(items: T[], chunkSize?: number): Array<T[]> {
   }
 
   return chunks;
+}
+
+// export async function slee
+export const sleep = promisify(setTimeout);
+
+export async function randomDelay(min = 200, max = 400) {
+  const randomSeconds = Math.floor(Math.random() * (max - min)) + (min + 1);
+  await sleep(randomSeconds);
 }
