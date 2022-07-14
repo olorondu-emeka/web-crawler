@@ -19,7 +19,7 @@ function example() {
     const result = await crawler.crawl(url);
     const end = hrtime.bigint();
 
-    console.info(`\nExecution time: ${(end - start) / BigInt(10 ** 6)}ms`);
+    console.info(`\nExecution time: ${(end - start) / BigInt(10 ** 9)}s`);
 
     // store result in result.json
     writeFile('result.json', JSON.stringify(result, null, 4), (err) => {

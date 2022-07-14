@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 
-import { formatLink, randomDelay } from '../internal/utils';
+import { asyncParallelLoop, asyncSeriesLoop } from '../internal';
+import { formatLink, randomDelay, splitToChunks } from '../internal/utils';
 
 import { Node } from './crawler.model';
 import { fetchWebsite } from '../http/fetch';
@@ -53,7 +54,8 @@ export async function processLink(
   baseURL: string,
   childURL: string,
   visited: Record<string, boolean>,
-  retries?: number
+  retries?: number,
+  chunkSize?: number
 ): Promise<Node> {
   const formattedLink = formatLink(childURL, baseURL);
 
@@ -61,14 +63,27 @@ export async function processLink(
   await randomDelay();
 
   const html = await fetchWebsite(formattedLink, retries);
-  const children: Node[] = [];
+  let children: Node[] = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
 
-    for (const link of relativeLinks) {
-      const result = await processLink(baseURL, link, visited, retries);
-      children.push(result);
+    // process in chunks
+    const chunks = splitToChunks<string>(relativeLinks, chunkSize);
+
+    if (chunks.length) {
+      children = await asyncSeriesLoop<Node>(
+        chunks,
+        async (chunk: string[]) => {
+          const chunkResult = await asyncParallelLoop<Node>(
+            chunk,
+            (link: string) =>
+              processLink(baseURL, link, visited, retries, chunkSize)
+          );
+
+          return chunkResult;
+        }
+      );
     }
   }
 
