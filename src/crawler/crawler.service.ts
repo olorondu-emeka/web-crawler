@@ -2,12 +2,13 @@ import * as cheerio from 'cheerio';
 
 import { formatLink, randomDelay } from '../internal/utils';
 
+import { Node } from './crawler.model';
 import { fetchWebsite } from '../http/fetch';
 
 /**
  * retrieves all href values from the <a> tag present in a website's HTML
+ * @param visited a hashmap of visited sites
  * @param html website's HTML
- * @param prefix prefix to separate relative links from external links
  * @param baseURL the website's URL
  */
 export function getLinksFromWebsite(
@@ -42,20 +43,23 @@ export function getLinksFromWebsite(
 }
 
 /**
- * retrieves all href values from the <a> tag present in a website's HTML using the site's URL
- * @param link the website's URL
+ * builds a tree of all links and their corresponding children
+ * @param baseURL the root url
+ * @param childURL the relative link e.g `/about-us`
+ * @param visited a ma of visited sites
+ * @param retries number of retries for each HTTTP request
  */
 export async function processLink(
   baseURL: string,
   childURL: string,
   visited: Record<string, boolean>,
   retries?: number
-): Promise<any | null> {
+): Promise<Node> {
   const formattedLink = formatLink(childURL, baseURL);
 
   const html = await fetchWebsite(formattedLink, retries);
 
-  const children = [];
+  const children: Node[] = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);

@@ -9,8 +9,8 @@ export default class WebCrawler {
   }
 
   /**
-   * crawls a website given a URL
-   * @param url the root url to be crawled
+   * crawls a website given a url
+   * @param baseURL the root url to be crawled
    */
   async crawl(baseURL: string): Promise<any | undefined> {
     this.visited[baseURL] = true;

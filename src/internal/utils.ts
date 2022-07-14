@@ -37,10 +37,14 @@ export function splitToChunks<T>(items: T[], chunkSize?: number): Array<T[]> {
   return chunks;
 }
 
-// export async function slee
 export const sleep = promisify(setTimeout);
 
-export async function randomDelay(min = 200, max = 400) {
+/**
+ * async delay for a random amount of time
+ * @param min minimum number of milliseconds
+ * @param max  maximum number of milliseconds
+ */
+export async function randomDelay(min = 200, max = 400): Promise<void> {
   const randomSeconds = Math.floor(Math.random() * (max - min)) + (min + 1);
   await sleep(randomSeconds);
 }
