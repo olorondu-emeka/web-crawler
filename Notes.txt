@@ -18,3 +18,4 @@ Edge cases & Todos
 4. add chunkSize for batch processing
 5. Todo: rate limiter for max number of sites to be visited
 6. Todo: write unit tests
+7. how to keep track of visited sites

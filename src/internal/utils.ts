@@ -4,12 +4,8 @@
  * @param prefix link prefix
  * @param baseURL parent URL for a relative link (optional)
  */
-export function formatLink(
-  link: string,
-  prefix: string,
-  baseURL?: string
-): string {
-  const formattedLink = prefix.length ? `${baseURL}${link}` : link;
+export function formatLink(link: string, baseURL?: string): string {
+  const formattedLink = `${baseURL}${link}`;
   if (formattedLink.endsWith('/')) {
     return formattedLink.substring(0, formattedLink.length - 1);
   }
