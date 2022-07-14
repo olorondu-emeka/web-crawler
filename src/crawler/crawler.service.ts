@@ -29,8 +29,6 @@ export function getLinksFromWebsite(
 
     const condition = link && link.length > 1 && link.startsWith(prefix);
     if (condition) {
-      // console.log('hii');
-
       const formattedLink = formatLink(link, baseURL);
       if (!linksMap[formattedLink] && !visited[formattedLink]) {
         validLinks.push(link);
@@ -54,16 +52,13 @@ export async function processLink(
   retries?: number
 ): Promise<any | null> {
   const formattedLink = formatLink(childURL, baseURL);
-  console.log('formatted link', formattedLink);
 
   const html = await fetchWebsite(formattedLink, retries);
-  // console.log('html', html);
 
   const children = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
-    console.log('relative links', relativeLinks);
 
     for (const link of relativeLinks) {
       // delay to safegueard against web-crawler detection enabed sites
@@ -71,11 +66,7 @@ export async function processLink(
 
       const result = await processLink(baseURL, link, visited, retries);
       children.push(result);
-
-      console.log('processed result', result);
     }
-
-    console.log('visited', visited);
   }
 
   return {

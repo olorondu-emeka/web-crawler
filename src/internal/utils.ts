@@ -12,6 +12,13 @@ export function formatLink(link: string, baseURL?: string): string {
     return formattedLink.substring(0, formattedLink.length - 1);
   }
 
+  if (formattedLink.includes('#')) {
+    const index = formattedLink.indexOf('#');
+    return formattedLink[index - 1] === '/'
+      ? formattedLink.substring(0, index - 1)
+      : formattedLink.substring(0, index);
+  }
+
   return formattedLink;
 }
 
