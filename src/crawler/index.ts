@@ -24,7 +24,7 @@ export default class WebCrawler {
       this?.config?.retries
     );
 
-    console.log('visited', this.visited);
+    console.log('\nvisited', this.visited);
     return result;
   }
 }
