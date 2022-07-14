@@ -17,10 +17,10 @@ function example() {
 
     const result = await crawler.crawl(url);
 
-    console.log('final result', result);
+    console.log('\nfinal result', result);
 
     const end = hrtime.bigint();
-    console.info(`Execution time: ${(end - start) / BigInt(10 ** 6)}ms`);
+    console.info(`\nExecution time: ${(end - start) / BigInt(10 ** 6)}ms`);
 
     consoleInterface.close();
   });
