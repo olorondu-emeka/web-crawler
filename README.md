@@ -1,9 +1,10 @@
 # web-crawler
-a simple web crawler that retrieves all the links from a base URL (within the same domain) and stores it in form of an N-ary tree (stored in a `results.json` file).
+A simple web crawler that retrieves all the links from a starting URL (within the same domain) and stores it in form of an N-ary tree (stored in a `results.json` file).
 
 ## Problem statement
-build a web crawler with the following specifications:
-- the crawler should visit each URL it finds on the same domain. 
+Build a web crawler with the following specifications:
+- The crawler should have a starting (base) URL.
+- The crawler should visit each URL it finds on the same domain. 
 - It should print each URL visited, and a list of links found on that page. 
 - The crawler should be limited to one subdomain.
 
@@ -47,7 +48,7 @@ I didn't include unit tests as a result of time constraint.
 - (config) retries for failed requests.
 - handled duplicate links.
 - each node is visited only once.
-- randomDelay to mimick human behaviour when visiting sites.
+- `randomDelay` to mimick human behaviour when visiting sites.
 
 ## Possible improvements
 - unit & integration tests.
