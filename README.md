@@ -53,6 +53,7 @@ I didn't include unit tests as a result of time constraint.
 ## Possible improvements
 - unit & integration tests.
 - rate limiter for maximum number of sites to be visited.
+-provide backwards compactibikity for old websites relative links e.g `www.example.com/careers.html`
 
 ## Built with
 - [Node.js](https://nodejs.org) - JavaScript runtime for backend development.
