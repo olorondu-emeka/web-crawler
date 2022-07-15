@@ -53,8 +53,7 @@ export async function concurrentLoop<T>(
   callback: (item: string) => Promise<T>
 ) {
   return asyncSeriesLoop<T>(batchArray, async (batch: string[]) => {
-    const batchResult = await asyncParallelLoop<Node>(batch, callback);
-
+    const batchResult = await asyncParallelLoop<T>(batch, callback);
     return batchResult;
   });
 }
