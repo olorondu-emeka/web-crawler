@@ -24,6 +24,8 @@ export async function asyncSeriesLoop<T>(
 ) {
   let finalResult: T[] = [];
 
+  // const lastResolvedPromise = await callback(items[0]);
+
   const lastResolvedPromise = await items.reduce(
     async (previousPromise: Promise<any>, currentItem: string[]) => {
       const result = await previousPromise;

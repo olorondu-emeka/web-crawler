@@ -6,5 +6,5 @@ export interface Node {
 
 export interface CrawlerConfig {
   retries?: number;
-  chunkSize?: number;
+  batchSize?: number;
 }

@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 
-import { formatLink, randomDelay } from '../internal/utils';
+import { asyncParallelLoop, asyncSeriesLoop } from '../internal';
+import { formatLink, randomDelay, splitToBatches } from '../internal/utils';
 
 import { Node } from './crawler.model';
 import { fetchWebsite } from '../http/fetch';
@@ -22,7 +23,7 @@ export function getLinksFromWebsite(
 
   const links = $('a');
 
-  // keeps track of duplicate links
+  // keeps track of duplicate links (map instead of a list to enhance performance during retrieval)
   const linksMap: Record<string, boolean> = {};
 
   links.each(function () {
@@ -43,7 +44,7 @@ export function getLinksFromWebsite(
 }
 
 /**
- * builds a tree of all links and their corresponding children
+ * builds an N-ary (generic) tree of all links and their corresponding children
  * @param baseURL the root url
  * @param childURL the relative link e.g `/about-us`
  * @param visited a ma of visited sites
@@ -53,7 +54,8 @@ export async function processLink(
   baseURL: string,
   childURL: string,
   visited: Record<string, boolean>,
-  retries?: number
+  retries?: number,
+  batchSize?: number
 ): Promise<Node> {
   const formattedLink = formatLink(childURL, baseURL);
 
@@ -61,14 +63,27 @@ export async function processLink(
   await randomDelay();
 
   const html = await fetchWebsite(formattedLink, retries);
-  const children: Node[] = [];
+  let children: Node[] = [];
 
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
 
-    for (const link of relativeLinks) {
-      const result = await processLink(baseURL, link, visited, retries);
-      children.push(result);
+    // process in batches
+    const batches = splitToBatches<string>(relativeLinks, batchSize);
+
+    if (batches.length) {
+      children = await asyncSeriesLoop<Node>(
+        batches,
+        async (batch: string[]) => {
+          const batchResult = await asyncParallelLoop<Node>(
+            batch,
+            (link: string) =>
+              processLink(baseURL, link, visited, retries, batchSize)
+          );
+
+          return batchResult;
+        }
+      );
     }
   }
 
