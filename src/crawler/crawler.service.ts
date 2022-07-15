@@ -44,7 +44,7 @@ export function getLinksFromWebsite(
 }
 
 /**
- * builds a tree of all links and their corresponding children
+ * builds an N-ary (generic) tree of all links and their corresponding children
  * @param baseURL the root url
  * @param childURL the relative link e.g `/about-us`
  * @param visited a ma of visited sites
