@@ -1,9 +1,9 @@
 import * as cheerio from 'cheerio';
 
-import { asyncParallelLoop, asyncSeriesLoop } from '../internal';
 import { formatLink, randomDelay, splitToBatches } from '../internal/utils';
 
 import { Node } from './crawler.model';
+import { concurrentLoop } from '../internal';
 import { fetchWebsite } from '../http/fetch';
 
 /**
@@ -72,17 +72,8 @@ export async function processLink(
     const batches = splitToBatches<string>(relativeLinks, batchSize);
 
     if (batches.length) {
-      children = await asyncSeriesLoop<Node>(
-        batches,
-        async (batch: string[]) => {
-          const batchResult = await asyncParallelLoop<Node>(
-            batch,
-            (link: string) =>
-              processLink(baseURL, link, visited, retries, batchSize)
-          );
-
-          return batchResult;
-        }
+      children = await concurrentLoop(batches, (link: string) =>
+        processLink(baseURL, link, visited, retries, batchSize)
       );
     }
   }
