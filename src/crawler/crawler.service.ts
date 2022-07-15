@@ -23,7 +23,7 @@ export function getLinksFromWebsite(
 
   const links = $('a');
 
-  // keeps track of duplicate links
+  // keeps track of duplicate links (map instead of a list to enhance performance during retrieval)
   const linksMap: Record<string, boolean> = {};
 
   links.each(function () {
@@ -55,7 +55,7 @@ export async function processLink(
   childURL: string,
   visited: Record<string, boolean>,
   retries?: number,
-  chunkSize?: number
+  batchSize?: number
 ): Promise<Node> {
   const formattedLink = formatLink(childURL, baseURL);
 
@@ -68,17 +68,17 @@ export async function processLink(
   if (html) {
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
 
-    // process in chunks
-    const chunks = splitToChunks<string>(relativeLinks, chunkSize);
+    // process in batches
+    const batches = splitToChunks<string>(relativeLinks, batchSize);
 
-    if (chunks.length) {
+    if (batches.length) {
       children = await asyncSeriesLoop<Node>(
-        chunks,
-        async (chunk: string[]) => {
+        batches,
+        async (batch: string[]) => {
           const chunkResult = await asyncParallelLoop<Node>(
-            chunk,
+            batch,
             (link: string) =>
-              processLink(baseURL, link, visited, retries, chunkSize)
+              processLink(baseURL, link, visited, retries, batchSize)
           );
 
           return chunkResult;

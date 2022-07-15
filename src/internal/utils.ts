@@ -23,18 +23,18 @@ export function formatLink(link: string, baseURL?: string): string {
 }
 
 /**
- * splits an array into a predefined number of chunks
+ * splits an array into a predefined number of batches
  * @param items array to be split
- * @param chunkSize chunk size for the array
+ * @param batchSize batch size for the array
  */
-export function splitToChunks<T>(items: T[], chunkSize?: number): Array<T[]> {
-  const maxChunkSize = chunkSize ? Math.max(0, Number(chunkSize)) : 10;
-  const chunks = [];
+export function splitToChunks<T>(items: T[], batchSize?: number): Array<T[]> {
+  const maxChunkSize = batchSize ? Math.max(0, Number(batchSize)) : 10;
+  const batches = [];
   for (let i = 0; i < items.length; i += maxChunkSize) {
-    chunks.push(items.slice(i, maxChunkSize + i));
+    batches.push(items.slice(i, maxChunkSize + i));
   }
 
-  return chunks;
+  return batches;
 }
 
 export const sleep = promisify(setTimeout);
