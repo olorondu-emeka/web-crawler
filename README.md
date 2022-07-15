@@ -45,7 +45,7 @@ I didn't include unit tests as a result of time constraint.
 
 ## Performance optimization strategies
 - concurrency & batch processing (configurable batch size).
-- (config) retries for failed requests.
+- retries for failed requests.
 - handled duplicate links.
 - each node is visited only once.
 - `randomDelay` to mimick human behaviour when visiting sites.
