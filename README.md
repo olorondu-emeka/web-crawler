@@ -54,6 +54,7 @@ I didn't include unit tests as a result of time constraint.
 - unit & integration tests.
 - rate limiter for maximum number of sites to be visited.
 - provide backwards compactibility for old websites relative links e.g `www.example.com/careers.html`
+- check for 404 errors when making requests and set `count = maxRetries` so it can skip immediately (whch would save some milliseconds)
 
 ## Built with
 - [Node.js](https://nodejs.org) - JavaScript runtime for backend development.
