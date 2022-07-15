@@ -13,7 +13,7 @@ function example() {
 
   // let url: string;
   consoleInterface.question('Enter URL (https://):\n', async (url) => {
-    const crawler = new WebCrawler({ retries: 1 });
+    const crawler = new WebCrawler();
 
     const start = hrtime.bigint();
     const result = await crawler.crawl(url);

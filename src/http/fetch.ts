@@ -18,6 +18,7 @@ export async function fetchWebsite(
   while (!success) {
     try {
       if (count === maxRetries) {
+        console.log(`${maxRetries} retries for ${url} failed`);
         break;
       }
 
