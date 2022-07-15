@@ -28,7 +28,7 @@ export function formatLink(link: string, baseURL?: string): string {
  * @param batchSize batch size for the array
  */
 export function splitToBatches<T>(items: T[], batchSize?: number): Array<T[]> {
-  const maxBatchSize = batchSize ? Math.max(0, Number(batchSize)) : 10;
+  const maxBatchSize = batchSize ? Math.max(0, Number(batchSize)) : 30;
   const batches = [];
   for (let i = 0; i < items.length; i += maxBatchSize) {
     batches.push(items.slice(i, maxBatchSize + i));
