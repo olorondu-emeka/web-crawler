@@ -44,7 +44,7 @@ yarn start:dev
 I didn't include unit tests as a result of time constraint.
 
 ## Performance optimization strategies
-- concurrency & batch processing (configurable batch size).
+- concurrency & batch processing (higher batch sizes leads to faster crawling).
 - retries for failed requests.
 - handled duplicate links.
 - each node is visited only once.
