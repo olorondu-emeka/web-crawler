@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 
 import { asyncParallelLoop, asyncSeriesLoop } from '../internal';
-import { formatLink, randomDelay, splitToChunks } from '../internal/utils';
+import { formatLink, randomDelay, splitToBatches } from '../internal/utils';
 
 import { Node } from './crawler.model';
 import { fetchWebsite } from '../http/fetch';
@@ -69,19 +69,19 @@ export async function processLink(
     const relativeLinks = getLinksFromWebsite(visited, html, baseURL);
 
     // process in batches
-    const batches = splitToChunks<string>(relativeLinks, batchSize);
+    const batches = splitToBatches<string>(relativeLinks, batchSize);
 
     if (batches.length) {
       children = await asyncSeriesLoop<Node>(
         batches,
         async (batch: string[]) => {
-          const chunkResult = await asyncParallelLoop<Node>(
+          const batchResult = await asyncParallelLoop<Node>(
             batch,
             (link: string) =>
               processLink(baseURL, link, visited, retries, batchSize)
           );
 
-          return chunkResult;
+          return batchResult;
         }
       );
     }

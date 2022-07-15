@@ -27,11 +27,11 @@ export function formatLink(link: string, baseURL?: string): string {
  * @param items array to be split
  * @param batchSize batch size for the array
  */
-export function splitToChunks<T>(items: T[], batchSize?: number): Array<T[]> {
-  const maxChunkSize = batchSize ? Math.max(0, Number(batchSize)) : 10;
+export function splitToBatches<T>(items: T[], batchSize?: number): Array<T[]> {
+  const maxBatchSize = batchSize ? Math.max(0, Number(batchSize)) : 10;
   const batches = [];
-  for (let i = 0; i < items.length; i += maxChunkSize) {
-    batches.push(items.slice(i, maxChunkSize + i));
+  for (let i = 0; i < items.length; i += maxBatchSize) {
+    batches.push(items.slice(i, maxBatchSize + i));
   }
 
   return batches;
