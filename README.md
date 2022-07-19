@@ -48,13 +48,22 @@ I didn't include unit tests as a result of time constraint.
 - retries for failed requests.
 - handled duplicate links.
 - each node is visited only once.
-- `randomDelay` to mimick human behaviour when visiting sites.
+- `randomDelay` to mimick human behaviour when visiting sites. (and bypass rate limiters)
+- built as a library
 
 ## Possible improvements
 - unit & integration tests.
-- rate limiter for maximum number of sites to be visited.
+- rate limiter for maximum number of sites to be visited. (per node or total nodes in the tree).
 - provide backwards compactibility for old websites relative links e.g `www.example.com/careers.html`
 - check for 404 errors when making requests and set `count = maxRetries` so it can skip immediately (whch would save some milliseconds)
+- add time range for `randomDelay` to config
+
+## Unit testing
+- test everything in `fetch.ts` to ensure that it fetches html correctly and retries correctly
+- test `getLinksFromWebsite` to ensure that it performs as expected and returns the appropriate result in success and failure modes
+- test `splitToChunks` in success and failure modes
+- test `asyncSeriesLoop` and `asyncParallelLoop` to ensure that it performs as expected in success and failure modes
+- test 
 
 ## Built with
 - [Node.js](https://nodejs.org) - JavaScript runtime for backend development.
