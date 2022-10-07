@@ -63,7 +63,7 @@ I didn't include unit tests as a result of time constraint.
 - test `getLinksFromWebsite` to ensure that it performs as expected and returns the appropriate result in success and failure modes
 - test `splitToChunks` in success and failure modes
 - test `asyncSeriesLoop` and `asyncParallelLoop` to ensure that it performs as expected in success and failure modes
-- test 
+
 
 ## Built with
 - [Node.js](https://nodejs.org) - JavaScript runtime for backend development.
